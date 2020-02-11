@@ -4,67 +4,64 @@ module.exports = {
     findById,
     add,
     update,
-    remove
+    remove,
+    getClass,
+    getOrigin
 }
+
 
 function find() {
-    return db('champions');
-}
+    let champions = db('champions');
 
-function findById(id) {
-    return db('champions')
-    .where({ id })
-    .first()
-}
+    let newChampionsArray = champions.map(champ => this.findById(champ.id))
 
-function find() {
-    let items = db('items');
-
-    let newItemsArray = items.map(item => this.findById(item.id))
-
-    return newItemsArray
+    return newChampionsArray
 }
 
 
 function findById(id) {
-    let items = db('items');
+    let champions = db('champions');
 
     if (id) {
         
-        items.where({ id }).first();
+        champions.where({ id }).first();
 
-        if(items.isBase) {
-            const promises = [items, this.getItemPossibilties(id)];
+        const promises = [champions, this.getClass(id), this.getOrigin(id)];
 
-            return Promise.all(promises).then(results => {
-                let [ item, builds ] = results;
+        return Promise.all(promises).then(results => {
+            let [ champion, classes, origin ] = results;
 
-                if (item) {
-                    item.builds = builds;
+            if (champion) {
+                champion.classes = classes;
+                champion.origin = origin;
 
-                    return item
-                } else {
-                    return null;
-                }
-            });
-        } else {
-            const promises = [items, this.getItemCombo(id)];
-
-            return Promise.all(promises).then(results => {
-                let [ item, combo ] = results;
-
-                if (item) {
-                    item.combo = combo;
-
-                    return item
-                } else {
-                    return null;
-                }
-            });
-        }
+                return champion
+            } else {
+                return null;
+            }
+        })
     }
 
-    return items
+    return champions
+}
+
+
+function getClass(id) {
+    let query = db('champ_class_origin as cco')
+        .where('champ_id', id)
+        .join('origins', 'cco.origin_id', 'origins.id')
+        .select('*').from('origins')
+
+    return query
+}
+
+function getOrigin(id) {
+    let query = db('champ_class_origin as cco')
+        .where('champ_id', id)
+        .join('classes', 'cco.class_id', 'classes.id')
+        .select('*').from('classes')
+
+    return query
 }
 
 function add(champion) {
