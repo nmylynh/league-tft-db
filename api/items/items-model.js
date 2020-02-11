@@ -12,10 +12,7 @@ module.exports = {
 function find() {
     let items = db('items');
 
-    let newItemsArray = items.map(item => {
-
-        return this.findById(item.id)
-    })
+    let newItemsArray = items.map(item => this.findById(item.id))
 
     return newItemsArray
 }
@@ -25,7 +22,7 @@ function findById(id) {
     let items = db('items');
 
     if (id) {
-        
+
         items.where({ id }).first();
 
         if(items.isBase) {
