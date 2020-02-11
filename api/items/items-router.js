@@ -7,6 +7,7 @@ module.exports = router;
 router.get('/', get)
 router.get('/:id', getById);
 router.post('/', add);
+router.post('/combos', addBuilds);
 router.put('/:id', update);
 router.delete('/:id', remove);
 
@@ -35,6 +36,16 @@ async function getById(req, res) {
 async function add(req, res) {
     try {
         const newItem = await Items.add(req.body);
+
+        res.status(201).json(newItem);
+    } catch (err) {
+        res.status(500).json({ success: false, err, msg: 'Failed to add the Item.' });
+    }
+}
+
+async function addBuilds(req, res) {
+    try {
+        const newItem = await Items.addCombos(req.body);
 
         res.status(201).json(newItem);
     } catch (err) {

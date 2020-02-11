@@ -1,10 +1,10 @@
 const express = require('express');
 const server = express();
 const configMiddleware = require('./middleware.js');
-const itemsRouter = require('./api/itemsRouter');
-const champsRouter = require('./api/champsRouter');
-const originsRouter = require('./api/originsRouter');
-const classesRouter = require('./api/classesRouter');
+const itemsRouter = require('./api/items/items-router');
+const champsRouter = require('./api/champions/champions-router');
+const originsRouter = require('./api/origins/origins-router');
+const classesRouter = require('./api/classes/classes-router');
 
 configMiddleware(server);
 
